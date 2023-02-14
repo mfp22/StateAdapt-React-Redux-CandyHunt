@@ -1,49 +1,23 @@
-import { createSlice, configureStore, PayloadAction } from "@reduxjs/toolkit";
-import { dragEndReducer } from "./reducers/dragEnd";
-import { moveBelowReducer } from "./reducers/moveBelow";
-
-const initialState: {
-  board: string[];
-  boardSize: number;
-  squareBeingReplaced: Element | undefined;
-  squareBeingDragged: Element | undefined;
-} = {
-  board: [],
-  boardSize: 8,
-  squareBeingDragged: undefined,
-  squareBeingReplaced: undefined,
-};
-
-const candyCrushSlice = createSlice({
-  name: "candyCrush",
-  initialState,
-  reducers: {
-    updateBoard: (state, action: PayloadAction<string[]>) => {
-      state.board = action.payload;
-    },
-    dragStart: (state, action: PayloadAction<any>) => {
-      state.squareBeingDragged = action.payload;
-    },
-    dragDrop: (state, action: PayloadAction<any>) => {
-      state.squareBeingReplaced = action.payload;
-    },
-    dragEnd: dragEndReducer,
-    moveBelow: moveBelowReducer,
-  },
-});
+import { configureStore } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux/es/exports";
+import { TypedUseSelectorHook } from "react-redux/es/types";
+import { boardSlice } from "./board/board.slice";
 
 export const store = configureStore({
   reducer: {
-    candyCrush: candyCrushSlice.reducer,
+    board: boardSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,
     }),
 });
 
-export const { updateBoard, moveBelow, dragDrop, dragEnd, dragStart } =
-  candyCrushSlice.actions;
+export const { updateBoard, moveBelow, dragDrop, dragEnd, dragStart } = boardSlice.actions;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

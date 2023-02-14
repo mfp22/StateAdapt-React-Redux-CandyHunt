@@ -1,5 +1,5 @@
 import { dragDrop, dragEnd, dragStart } from "../store";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch } from "../store";
 
 function Tile({ candy, candyId }: { candy: string; candyId: number }) {
   const dispatch = useAppDispatch();
@@ -17,11 +17,11 @@ function Tile({ candy, candyId }: { candy: string; candyId: number }) {
           alt=""
           className="h-20 w-20"
           draggable={true}
-          onDragStart={(e) => dispatch(dragStart(e.target))}
-          onDragOver={(e) => e.preventDefault()}
-          onDragEnter={(e) => e.preventDefault()}
-          onDragLeave={(e) => e.preventDefault()}
-          onDrop={(e) => dispatch(dragDrop(e.target))}
+          onDragStart={e => dispatch(dragStart(e.target))}
+          onDragOver={e => e.preventDefault()}
+          onDragEnter={e => e.preventDefault()}
+          onDragLeave={e => e.preventDefault()}
+          onDrop={e => dispatch(dragDrop(e.target))}
           onDragEnd={() => dispatch(dragEnd())}
           candy-id={candyId}
         />

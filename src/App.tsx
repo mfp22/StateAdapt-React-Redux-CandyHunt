@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import Board from "./components/Board";
+import Board from "./board/Board";
 import { moveBelow, updateBoard } from "./store";
-import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { useAppDispatch, useAppSelector } from "./store";
 import { createBoard } from "./board/createBoard";
 import { getLastIndexForColumnOffset, getInvalidRowMatches } from "./board/formulas";
 import {
@@ -13,8 +13,8 @@ import {
 
 function App() {
   const dispatch = useAppDispatch();
-  const board = useAppSelector(({ candyCrush: { board } }) => board);
-  const boardSize = useAppSelector(({ candyCrush: { boardSize } }) => boardSize);
+  const board = useAppSelector(({ board: { board } }) => board);
+  const boardSize = useAppSelector(({ board: { boardSize } }) => boardSize);
 
   useEffect(() => {
     dispatch(updateBoard(createBoard(boardSize)));

@@ -1,11 +1,9 @@
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector } from "../store";
 import Tile from "./Tile";
 
 function Board() {
-  const board: string[] = useAppSelector(({ candyCrush: { board } }) => board);
-  const boardSize: number = useAppSelector(
-    ({ candyCrush: { boardSize } }) => boardSize
-  );
+  const board: string[] = useAppSelector(({ board: { board } }) => board);
+  const boardSize: number = useAppSelector(({ board: { boardSize } }) => boardSize);
   return (
     <div
       className="flex flex-wrap rounded-lg"
