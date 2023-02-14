@@ -1,15 +1,11 @@
 import { WritableDraft } from "immer/dist/types/types-external";
+import { getLastIndexForColumnOffset, getInvalidRowMatches } from "../../board/formulas";
 import {
-  formulaForColumnOfFour,
-  formulaForColumnOfThree,
-  generateInvalidMoves,
-} from "../../utils/formulas";
-import {
-  checkForColumnOfThree,
-  checkForRowOfFour,
-  checkForRowOfThree,
-  isColumnOfFour,
-} from "../../utils/moveCheckLogic";
+  eraseColumnOfThree,
+  eraseRowOfFour,
+  eraseRowOfThree,
+  eraseColumnOfFour,
+} from "../../board/moveCheckLogic";
 
 export const dragEndReducer = (
   state: WritableDraft<{
@@ -28,12 +24,8 @@ export const dragEndReducer = (
     squareBeingReplaced?.getAttribute("candy-id") as string
   );
 
-  newBoard[squareBeingReplacedId] = squareBeingDragged?.getAttribute(
-    "src"
-  ) as string;
-  newBoard[squareBeingDraggedId] = squareBeingReplaced?.getAttribute(
-    "src"
-  ) as string;
+  newBoard[squareBeingReplacedId] = squareBeingDragged?.getAttribute("src") as string;
+  newBoard[squareBeingDraggedId] = squareBeingReplaced?.getAttribute("src") as string;
 
   const validMoves: number[] = [
     squareBeingDraggedId - 1,
@@ -44,28 +36,28 @@ export const dragEndReducer = (
 
   const validMove: boolean = validMoves.includes(squareBeingReplacedId);
 
-  const isAColumnOfFour: boolean | undefined = isColumnOfFour(
+  const isAColumnOfFour: boolean | undefined = eraseColumnOfFour(
     newBoard,
     boardSize,
-    formulaForColumnOfFour(boardSize)
+    getLastIndexForColumnOffset(boardSize, 3)
   );
 
-  const isARowOfFour: boolean | undefined = checkForRowOfFour(
+  const isARowOfFour: boolean | undefined = eraseRowOfFour(
     newBoard,
     boardSize,
-    generateInvalidMoves(boardSize, true)
+    getInvalidRowMatches(boardSize, 3)
   );
 
-  const isAColumnOfThree: boolean | undefined = checkForColumnOfThree(
+  const isAColumnOfThree: boolean | undefined = eraseColumnOfThree(
     newBoard,
     boardSize,
-    formulaForColumnOfThree(boardSize)
+    getLastIndexForColumnOffset(boardSize, 2)
   );
 
-  const isARowOfThree: boolean | undefined = checkForRowOfThree(
+  const isARowOfThree: boolean | undefined = eraseRowOfThree(
     newBoard,
     boardSize,
-    generateInvalidMoves(boardSize)
+    getInvalidRowMatches(boardSize, 2)
   );
 
   if (
@@ -76,12 +68,8 @@ export const dragEndReducer = (
     squareBeingDragged = undefined;
     squareBeingReplaced = undefined;
   } else {
-    newBoard[squareBeingReplacedId] = squareBeingReplaced?.getAttribute(
-      "src"
-    ) as string;
-    newBoard[squareBeingDraggedId] = squareBeingDragged?.getAttribute(
-      "src"
-    ) as string;
+    newBoard[squareBeingReplacedId] = squareBeingReplaced?.getAttribute("src") as string;
+    newBoard[squareBeingDraggedId] = squareBeingDragged?.getAttribute("src") as string;
   }
   state.board = newBoard;
 };

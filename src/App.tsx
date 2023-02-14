@@ -3,13 +3,13 @@ import Board from "./components/Board";
 import { moveBelow, updateBoard } from "./store";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { createBoard } from "./board/createBoard";
-import { getLastIndexForColumnOffset, getInvalidRowMatches } from "./utils/formulas";
+import { getLastIndexForColumnOffset, getInvalidRowMatches } from "./board/formulas";
 import {
   eraseColumnOfFour,
   eraseRowOfFour,
   eraseColumnOfThree,
   eraseRowOfThree,
-} from "./utils/moveCheckLogic";
+} from "./board/moveCheckLogic";
 
 function App() {
   const dispatch = useAppDispatch();

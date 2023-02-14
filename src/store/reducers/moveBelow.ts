@@ -1,5 +1,5 @@
-import { candies } from "../../utils/candyData";
-import { formulaForMoveBelow } from "../../utils/formulas";
+import { candies } from "../../board/candyData";
+import { getLastIndexForColumnOffset } from "../../board/formulas";
 import { WritableDraft } from "immer/dist/types/types-external";
 
 export const moveBelowReducer = (
@@ -13,7 +13,7 @@ export const moveBelowReducer = (
   const newBoard: string[] = [...state.board];
   const { boardSize } = state;
   let boardChanges: boolean = false;
-  const formulaForMove: number = formulaForMoveBelow(boardSize);
+  const formulaForMove: number = getLastIndexForColumnOffset(boardSize, 1);
   for (let i = 0; i <= formulaForMove; i++) {
     const firstRow = Array(boardSize)
       .fill(0)
