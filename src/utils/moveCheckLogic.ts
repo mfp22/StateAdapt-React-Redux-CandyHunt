@@ -1,34 +1,21 @@
-export const isColumnOfFour = (
-  newBoard: string[],
-  boardSize: number,
-  formulaForColumnOfFour: number
-) => {
-  for (let i: number = 0; i <= formulaForColumnOfFour; i++) {
-    const columnOfFour: number[] = [
-      i,
-      i + boardSize,
-      i + boardSize * 2,
-      i + boardSize * 3,
-    ];
-    const decidedColor: string = newBoard[i];
+export const eraseColumnOfFour = (newBoard: string[], boardSize: number, offset: number) => {
+  for (let i = 0; i <= offset; i++) {
+    const columnOfFour = [i, i + boardSize, i + boardSize * 2, i + boardSize * 3];
+    const decidedColor = newBoard[i];
 
-    const isBlank: boolean = newBoard[i] === "";
+    const isBlank = newBoard[i] === "";
 
-    if (
-      columnOfFour.every(
-        (square: number) => newBoard[square] === decidedColor && !isBlank
-      )
-    ) {
-      columnOfFour.forEach((square: number) => (newBoard[square] = ""));
+    if (columnOfFour.every(square => newBoard[square] === decidedColor && !isBlank)) {
+      columnOfFour.forEach(square => (newBoard[square] = ""));
       return true;
     }
   }
 };
 
-export const checkForRowOfFour = (
+export const eraseRowOfFour = (
   newBoard: String[],
   boardSize: number,
-  invalidMovesForColumnOfFour: number[]
+  invalidRowMatches: number[]
 ) => {
   for (let i = 0; i < boardSize * boardSize; i++) {
     const rowOfFour = [i, i + 1, i + 2, i + 3];
@@ -36,41 +23,31 @@ export const checkForRowOfFour = (
 
     const isBlank = newBoard[i] === "";
 
-    if (invalidMovesForColumnOfFour.includes(i)) continue;
-    if (
-      rowOfFour.every((square) => newBoard[square] === decidedColor && !isBlank)
-    ) {
-      rowOfFour.forEach((square) => (newBoard[square] = ""));
+    if (invalidRowMatches.includes(i)) continue;
+    if (rowOfFour.every(square => newBoard[square] === decidedColor && !isBlank)) {
+      rowOfFour.forEach(square => (newBoard[square] = ""));
       return true;
     }
   }
 };
 
-export const checkForColumnOfThree = (
-  newBoard: String[],
-  boardSize: number,
-  formulaForColumnOfThree: number
-) => {
-  for (let i = 0; i <= formulaForColumnOfThree; i++) {
+export const eraseColumnOfThree = (newBoard: string[], boardSize: number, offset: number) => {
+  for (let i = 0; i <= offset; i++) {
     const columnOfThree = [i, i + boardSize, i + boardSize * 2];
     const decidedColor = newBoard[i];
     const isBlank = newBoard[i] === "";
 
-    if (
-      columnOfThree.every(
-        (square) => newBoard[square] === decidedColor && !isBlank
-      )
-    ) {
-      columnOfThree.forEach((square) => (newBoard[square] = ""));
+    if (columnOfThree.every(square => newBoard[square] === decidedColor && !isBlank)) {
+      columnOfThree.forEach(square => (newBoard[square] = ""));
       return true;
     }
   }
 };
 
-export const checkForRowOfThree = (
+export const eraseRowOfThree = (
   newBoard: string[],
   boardSize: number,
-  invalidMovesForColumnOfThree: number[]
+  invalidRowMatches: number[]
 ) => {
   for (let i = 0; i < boardSize * boardSize; i++) {
     const rowOfThree = [i, i + 1, i + 2];
@@ -78,14 +55,10 @@ export const checkForRowOfThree = (
 
     const isBlank = newBoard[i] === "";
 
-    if (invalidMovesForColumnOfThree.includes(i)) continue;
+    if (invalidRowMatches.includes(i)) continue;
 
-    if (
-      rowOfThree.every(
-        (square) => newBoard[square] === decidedColor && !isBlank
-      )
-    ) {
-      rowOfThree.forEach((square) => (newBoard[square] = ""));
+    if (rowOfThree.every(square => newBoard[square] === decidedColor && !isBlank)) {
+      rowOfThree.forEach(square => (newBoard[square] = ""));
       return true;
     }
   }
