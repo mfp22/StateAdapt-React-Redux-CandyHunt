@@ -25,10 +25,10 @@ function App() {
       const newBoard = [...board];
       eraseColumnOfFour(newBoard, boardSize, getLastIndexForColumnOffset(boardSize, 3));
       eraseRowOfFour(newBoard, boardSize, getInvalidRowMatches(boardSize, 3));
-      dispatch(moveBelow());
       eraseColumnOfThree(newBoard, boardSize, getLastIndexForColumnOffset(boardSize, 2));
       eraseRowOfThree(newBoard, boardSize, getInvalidRowMatches(boardSize, 2));
       dispatch(updateBoard(newBoard));
+      dispatch(moveBelow());
     }, 150);
     return () => clearInterval(timeout);
   }, [board, dispatch, boardSize]);

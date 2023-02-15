@@ -27,20 +27,17 @@ const moveBelowReducer = (
       .map((_value: number, index) => index);
 
     const isFirstRow = firstRow.includes(i);
-    console.log("isFirstRow", isFirstRow);
 
     if (isFirstRow && newBoard[i] === "") {
       let randomNumber = Math.floor(Math.random() * candies.length);
       newBoard[i] = candies[randomNumber];
       boardChanges = true;
-      console.log("board changes 1");
     }
 
     if (newBoard[i + boardSize] === "") {
       newBoard[i + boardSize] = newBoard[i];
       newBoard[i] = "";
       boardChanges = true;
-      console.log("board changes 2");
     }
     if (boardChanges) state.board = newBoard;
   }
