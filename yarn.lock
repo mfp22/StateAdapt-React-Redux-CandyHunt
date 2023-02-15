@@ -1625,6 +1625,27 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@state-adapt/core@^0.63.0":
+  version "0.63.0"
+  resolved "https://registry.yarnpkg.com/@state-adapt/core/-/core-0.63.0.tgz#180463d10601db466c3d1ac29b4968b3b6372dda"
+  integrity sha512-9OUnO0Lzl6UelB80/XYRja1dDHXDNPH9uIS5nXGIvg1HG+Hosj8Xi5czm/QNKLhetDX0/Ag1JsbvtCJa39Si3g==
+  dependencies:
+    tslib "^2.0.0"
+
+"@state-adapt/react@^0.63.0":
+  version "0.63.0"
+  resolved "https://registry.yarnpkg.com/@state-adapt/react/-/react-0.63.0.tgz#75e9164cf0fbb7341dd24ace611a645e1c8bfa4f"
+  integrity sha512-z76NdlhPahHlmVSMhQfjxnxb/IjXMYqpAr2vmzGw8s/+YZT2es5vHBh4K+88ZcdDOM5qdF+iWdKLtKfqOUFYnw==
+  dependencies:
+    tslib "^2.0.0"
+
+"@state-adapt/rxjs@^0.63.0":
+  version "0.63.0"
+  resolved "https://registry.yarnpkg.com/@state-adapt/rxjs/-/rxjs-0.63.0.tgz#662b9c2d01cbd496f5835fd3eafb78e4f38ebf35"
+  integrity sha512-17/eD4Jb9RYgmmpzpd7l74tMV0tbK7UNtTnbrjrQ8+3dnZw+qp4QSQ6ieEMObXl5rgqbteWlE4rInSkb26cqPg==
+  dependencies:
+    tslib "^2.0.0"
+
 "@surma/rollup-plugin-off-main-thread@^2.2.3":
   version "2.2.3"
   resolved "https://registry.npmjs.org/@surma/rollup-plugin-off-main-thread/-/rollup-plugin-off-main-thread-2.2.3.tgz"
@@ -7579,6 +7600,13 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+rxjs@^7.8.0:
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.0.tgz#90a938862a82888ff4c7359811a595e14e1e09a4"
+  integrity sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==
+  dependencies:
+    tslib "^2.1.0"
+
 safe-buffer@5.1.2, safe-buffer@>=5.1.0, safe-buffer@^5.1.0, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
@@ -8303,6 +8331,11 @@ tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.0.0, tslib@^2.1.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.0.tgz#42bfed86f5787aeb41d031866c8f402429e0fddf"
+  integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
 
 tslib@^2.0.3:
   version "2.4.0"
