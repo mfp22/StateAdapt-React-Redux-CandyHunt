@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { WritableDraft } from "immer/dist/types/types-external";
+import produce from "immer";
 import { candies } from "./candyData";
 import { getLastIndexForColumnOffset, getInvalidRowMatches } from "./formulas";
 import {
@@ -8,13 +8,18 @@ import {
   eraseRowOfThree,
   eraseColumnOfFour,
 } from "./moveCheckLogic";
+import { adapt, watch } from "../store";
+import { createAdapter, joinAdapters } from "@state-adapt/core";
+import { createBoard } from "./createBoard";
+import { debounceTime } from "rxjs";
+import { toSource } from "@state-adapt/rxjs";
 
 const moveBelowReducer = (
   state: WritableDraft<{
     board: string[];
     boardSize: number;
-    squareBeingReplaced: Element | undefined;
-    squareBeingDragged: Element | undefined;
+    squareBeingReplaced: CandyData;
+    squareBeingDragged: CandyData;
   }>
 ) => {
   const newBoard: string[] = [...state.board];
@@ -47,30 +52,23 @@ const dragEndReducer = (
   state: WritableDraft<{
     board: string[];
     boardSize: number;
-    squareBeingReplaced: Element | undefined;
-    squareBeingDragged: Element | undefined;
+    squareBeingReplaced: CandyData;
+    squareBeingDragged: CandyData;
   }>
 ) => {
   const newBoard = [...state.board];
   let { boardSize, squareBeingDragged, squareBeingReplaced } = state;
-  const squareBeingDraggedId: number = parseInt(
-    squareBeingDragged?.getAttribute("candy-id") as string
-  );
-  const squareBeingReplacedId: number = parseInt(
-    squareBeingReplaced?.getAttribute("candy-id") as string
-  );
-
-  newBoard[squareBeingReplacedId] = squareBeingDragged?.getAttribute("src") as string;
-  newBoard[squareBeingDraggedId] = squareBeingReplaced?.getAttribute("src") as string;
+  newBoard[squareBeingReplaced.id] = squareBeingDragged.src;
+  newBoard[squareBeingDragged.id] = squareBeingReplaced.src;
 
   const validMoves: number[] = [
-    squareBeingDraggedId - 1,
-    squareBeingDraggedId - boardSize,
-    squareBeingDraggedId + 1,
-    squareBeingDraggedId + boardSize,
+    squareBeingDragged.id - 1,
+    squareBeingDragged.id - boardSize,
+    squareBeingDragged.id + 1,
+    squareBeingDragged.id + boardSize,
   ];
 
-  const validMove = validMoves.includes(squareBeingReplacedId);
+  const validMove = validMoves.includes(squareBeingReplaced.id);
 
   const isAColumnOfFour = eraseColumnOfFour(
     newBoard,
@@ -89,45 +87,65 @@ const dragEndReducer = (
   const isARowOfThree = eraseRowOfThree(newBoard, boardSize, getInvalidRowMatches(boardSize, 2));
 
   if (
-    squareBeingReplacedId &&
+    squareBeingReplaced.id &&
     validMove &&
     (isARowOfThree || isARowOfFour || isAColumnOfFour || isAColumnOfThree)
   ) {
-    squareBeingDragged = undefined;
-    squareBeingReplaced = undefined;
+    // squareBeingDragged = undefined;
+    // squareBeingReplaced = undefined;
   } else {
-    newBoard[squareBeingReplacedId] = squareBeingReplaced?.getAttribute("src") as string;
-    newBoard[squareBeingDraggedId] = squareBeingDragged?.getAttribute("src") as string;
+    newBoard[squareBeingReplaced.id] = squareBeingReplaced.src;
+    newBoard[squareBeingDragged.id] = squareBeingDragged.src;
   }
   state.board = newBoard;
 };
 
-const initialState: {
+type CandyData = {
+  id: number;
+  src: string;
+};
+
+type State = {
   board: string[];
   boardSize: number;
-  squareBeingReplaced: Element | undefined;
-  squareBeingDragged: Element | undefined;
-} = {
-  board: [],
+  squareBeingReplaced: CandyData | undefined;
+  squareBeingDragged: CandyData | undefined;
+};
+const initialState: State = {
+  board: createBoard(8),
   boardSize: 8,
   squareBeingDragged: undefined,
   squareBeingReplaced: undefined,
 };
 
-export const boardSlice = createSlice({
-  name: "board",
-  initialState,
-  reducers: {
-    updateBoard: (state, action: PayloadAction<string[]>) => {
-      state.board = action.payload;
-    },
-    dragStart: (state, action: PayloadAction<any>) => {
-      state.squareBeingDragged = action.payload;
-    },
-    dragDrop: (state, action: PayloadAction<any>) => {
-      state.squareBeingReplaced = action.payload;
-    },
-    dragEnd: dragEndReducer,
-    moveBelow: moveBelowReducer,
+const adapter = joinAdapters<State>()({
+  board: createAdapter<State["board"]>()({}),
+  boardSize: createAdapter<State["boardSize"]>()({}),
+  squareBeingDragged: createAdapter<State["squareBeingDragged"]>()({}),
+  squareBeingReplaced: createAdapter<State["squareBeingReplaced"]>()({}),
+})(() => ({
+  dragEnd: state => produce(state, dragEndReducer),
+  moveBelow: state => produce(state, moveBelowReducer),
+}))(([selectors, reactions]) => ({
+  eraseMatchesAndShiftTiles: state => {
+    const { board, boardSize } = state;
+    const newBoard = [...board];
+    eraseColumnOfFour(newBoard, boardSize, getLastIndexForColumnOffset(boardSize, 3));
+    eraseRowOfFour(newBoard, boardSize, getInvalidRowMatches(boardSize, 3));
+    eraseColumnOfThree(newBoard, boardSize, getLastIndexForColumnOffset(boardSize, 2));
+    eraseRowOfThree(newBoard, boardSize, getInvalidRowMatches(boardSize, 2));
+    return reactions.moveBelow({
+      ...state,
+      board: newBoard,
+    });
   },
+}))();
+
+const boardChangedDebounce150$ = watch("board", adapter).board$.pipe(
+  debounceTime(150),
+  toSource("boardChangedDebounce150$")
+);
+
+export const boardStore = adapt(["board", initialState, adapter], {
+  eraseMatchesAndShiftTiles: boardChangedDebounce150$,
 });

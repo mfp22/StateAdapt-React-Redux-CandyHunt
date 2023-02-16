@@ -1,9 +1,11 @@
-import { dragDrop, dragEnd, dragStart } from "../store";
-import { useAppDispatch } from "../store";
+import { boardStore } from "./board.slice";
+
+const elementToCandyData = (element: Element) => ({
+  id: parseInt(element.getAttribute("candy-id") as string),
+  src: element.getAttribute("src") as string,
+});
 
 function Tile({ candy, candyId }: { candy: string; candyId: number }) {
-  const dispatch = useAppDispatch();
-
   return (
     <div
       className="h-24 w-24 flex justify-center items-center m-0.5 rounded-lg select-none"
@@ -17,12 +19,14 @@ function Tile({ candy, candyId }: { candy: string; candyId: number }) {
           alt=""
           className="h-20 w-20"
           draggable={true}
-          onDragStart={e => dispatch(dragStart(e.target))}
+          onDragStart={e =>
+            boardStore.setSquareBeingDragged(elementToCandyData(e.target as Element))
+          }
           onDragOver={e => e.preventDefault()}
           onDragEnter={e => e.preventDefault()}
           onDragLeave={e => e.preventDefault()}
-          onDrop={e => dispatch(dragDrop(e.target))}
-          onDragEnd={() => dispatch(dragEnd())}
+          onDrop={e => boardStore.setSquareBeingReplaced(elementToCandyData(e.target as Element))}
+          onDragEnd={() => boardStore.dragEnd()}
           candy-id={candyId}
         />
       )}

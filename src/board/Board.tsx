@@ -1,17 +1,17 @@
-import { useAppSelector } from "../store";
+import { useStore } from "@state-adapt/react";
 import Tile from "./Tile";
+import { boardStore } from "./board.slice";
 
 function Board() {
-  const board: string[] = useAppSelector(({ board: { board } }) => board);
-  const boardSize: number = useAppSelector(({ board: { boardSize } }) => boardSize);
+  const boardStates = useStore(boardStore);
   return (
     <div
       className="flex flex-wrap rounded-lg"
       style={{
-        width: `${6.25 * boardSize}rem`,
+        width: `${6.25 * boardStates.boardSize}rem`,
       }}
     >
-      {board.map((candy: string, index: number) => (
+      {boardStates.board.map((candy: string, index: number) => (
         <Tile candy={candy} key={index} candyId={index} />
       ))}
     </div>
